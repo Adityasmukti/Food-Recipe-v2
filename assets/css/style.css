@@ -1,0 +1,45 @@
+.tombol {
+  visibility: hidden;
+}
+
+.titik {
+  visibility: visible;
+}
+
+.login .center {
+  position: relative !important;
+  top: calc(0%) !important;
+}
+
+.register .center {
+  position: relative !important;
+  top: calc(0%) !important;
+}
+
+/* About */
+.about i {
+  font-size: 100px;
+  transform: rotate(-20deg);
+}
+.about .card-header {
+  color: white;
+}
+
+@media (min-width: 768px) {
+  .tombol {
+    visibility: visible;
+  }
+  .titik {
+    visibility: hidden;
+  }
+
+  .login .center {
+    position: relative !important;
+    top: calc(50% - 150px) !important;
+  }
+
+  .register .center {
+    position: relative !important;
+    top: calc(50% - 90px) !important;
+  }
+}
