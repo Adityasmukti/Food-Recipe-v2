@@ -8,6 +8,7 @@ class MApp extends CI_Model
     parent::__construct();
     //Do your magic here
     $this->load->library('upload');
+    $this->LoadSetting();
   }
   //insert
   public function select($table, $where = "")
@@ -68,33 +69,6 @@ class MApp extends CI_Model
     return implode($pass);
   }
 
-  // Upload Image    
-  public function UploadImage($filename, &$newfilename)
-  {
-    $config['upload_path'] = './upload/img/'; //path folder
-    $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
-    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
-    $this->upload->initialize($config);
-    if ($this->upload->do_upload($filename)) {
-      $gbr = $this->upload->data();
-      $this->image_lib->initialize(array(
-        'image_library' => 'gd2',
-        'source_image' => './upload/img/' . $gbr['file_name'],
-        'maintain_ratio' => true,
-        'create_thumb' => false,
-        'quality' => '50%',
-        'new_image' => './upload/img/thumb/' . $gbr['file_name'],
-        'width' => 150,
-      ));
-      $this->image_lib->resize();
-      $newfilename = $gbr['file_name'];
-      return "";
-    } else {
-      $newfilename = "";
-      return $this->upload->display_errors();
-    }
-  }
-
   public function DeletedFile($filename)
   {
     # code...
@@ -102,9 +76,6 @@ class MApp extends CI_Model
       if (!empty($filename)) {
         //code...
         $file = './upload/img/' . $filename;
-        if (file_exists($file))
-          unlink($file);
-        $file = './upload/img/thumb/' . $filename;
         if (file_exists($file))
           unlink($file);
         return true;
@@ -142,6 +113,47 @@ class MApp extends CI_Model
   ///=======================================================================================================
   /// Recipe
   ///=======================================================================================================
+  public function getRecipe($category_id)
+  {
+    if (!empty($category_id))
+      $this->db->where('category_id', $category_id);
+    $this->db->select('recipe_id, recipe_name, recipe_image, category');
+    $this->db->from('tb_recipe');
+    $this->db->join("tb_recipe_category", 'recipe_category_recipe=recipe_id', 'left');
+    $this->db->join("tb_category", 'recipe_category_category=category_id', 'left');
+    $this->db->join("(SELECT recipe_category_recipe, GROUP_CONCAT(category_name SEPARATOR ', ') category FROM tb_recipe_category LEFT JOIN tb_category ON recipe_category_category = category_id GROUP BY recipe_category_recipe) D", 'recipe_id = D.recipe_category_recipe', 'left');
+    $this->db->group_by('recipe_id');
+    return $this->db->get();
+  }
+  public function getRecipeBy($recipe_id)
+  {
+    $this->db->select('*');
+    $this->db->from('tb_recipe');
+    $this->db->where('recipe_id', $recipe_id);
+    return $this->db->get();
+  }
+  public function getRecipeCategoryBy($recipe_id)
+  {
+    $this->db->select('*');
+    $this->db->from('tb_recipe_category');
+    $this->db->where('recipe_category_recipe', $recipe_id);
+    return $this->db->get();
+  }
+
+  // Upload Image    
+  public function UploadImageRecipe()
+  {
+    $config['upload_path'] = './upload/img/'; //path folder
+    $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload("recipe_image")) {
+      $gbr = $this->upload->data();
+      return $gbr['file_name'];
+    }
+    return "noimage.png";
+  }
+
 
   ///=======================================================================================================
 
@@ -150,6 +162,15 @@ class MApp extends CI_Model
   /// Setting
   ///=======================================================================================================
 
+  public function LoadSetting()
+  {
+    $queri = $this->db->get_where('tb_settings', array("setting_name" => "Application"))->result();
+    $settings = array();
+    foreach ($queri as $value) {
+      $settings[$value->setting_value_name] = $value->setting_value_data;
+    }
+    $this->session->set_userdata($settings);
+  }
   ///=======================================================================================================
 
 

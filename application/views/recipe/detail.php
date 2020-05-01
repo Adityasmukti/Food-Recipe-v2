@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Recipe</title>
+  <title>Detail Recipe</title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>
@@ -38,11 +38,6 @@
             </ol>
           </nav>
 
-          <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"><?= $pageheading ?></h1>
-          </div>
-
           <!-- Card -->
           <div class="card shadow mb-4">
             <!-- Card Header -->
@@ -54,39 +49,34 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-xl-8">
-                  <!--  -->
-                  <div class="form-group">
-                    <label for="recipeid">Recipe Id</label>
-                    <input type="text" id="recipeid" class="form-control" value="<?= $table->recipe_id ?>" disabled>
-                  </div>
                   <div class="form-group">
                     <label for="recipename">Recipe Name</label>
-                    <input type="text" id="recipename" class="form-control" value="<?= $table->recipe_name ?>" disabled>
+                    <input type="text" id="recipename" class="form-control" value="<?= $data->recipe_name ?>" disabled>
                   </div>
                   <div class="form-group">
                     <label for="category">Category</label>
                     <select name="category" id="category" class="form-control" multiple="multiple" style="display: none;" disabled>
-                      <?php foreach ($kategori as $v) { ?>
-                        <option <?php foreach ($categorirecipe as $value) {
-                                    if ($v->category_id === $value->category_id) echo "selected";
-                                  } ?> value="<?= $v->category_id ?>"><?= $v->category_name ?></option>
+                      <?php foreach ($category as $v) { ?>
+                        <option <?php foreach ($recipecategory as $value) {
+                                  echo $v->category_id === $value->recipe_category_category ? "selected" : "";
+                                } ?> value="<?= $v->category_id ?>"><?= $v->category_name ?></option>
                       <?php } ?>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="Ingredient">Ingredient</label>
-                    <textarea class="form-control" id="Ingredient" rows="4" disabled><?= $table->recipe_ingredient; ?></textarea>
+                    <textarea class="form-control" id="Ingredient" rows="4" disabled><?= $data->recipe_ingredient; ?></textarea>
                   </div>
                   <div class="form-group">
                     <label for="Instuction">Instuction</label>
-                    <textarea class="form-control" id="Instuction" rows="4" disabled><?= $table->recipe_instruction; ?></textarea>
+                    <textarea class="form-control" id="Instuction" rows="4" disabled><?= $data->recipe_instruction; ?></textarea>
                   </div>
                   <!--  -->
                 </div>
                 <div class="col-xl-4 text-center">
                   <label for="Image">Recipe Image</label>
                   <div class="form-group">
-                    <img src="<?= base_url('upload/img/') . $table->recipe_image ?>" alt="<?= $table->recipe_name ?>" class="rounded-circle Image" style="max-width:100%; max-height:100%;">
+                    <img src="<?= base_url('upload/img/') . $data->recipe_image ?>" alt="<?= $data->recipe_name ?>" class="rounded Image" style="max-width:100%; max-height:100%;">
                   </div>
                 </div>
               </div>
