@@ -7,8 +7,6 @@ class Notfound extends CI_Controller
     {
         parent::__construct();
         //Do your magic here
-        $this->MRef->logged();
-        $this->MRef->sessionstart();
     }
     //error 404 page
     public function index()

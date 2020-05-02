@@ -58,6 +58,12 @@
               </form>
               <!-- end filter select -->
               <div class="dropdown-divider mb-4"></div>
+              <?php if (!empty($this->session->flashdata('redalert'))) { ?>
+                <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('redalert') ?></div>
+              <?php } ?>
+              <?php if (!empty($this->session->flashdata('greenalert'))) { ?>
+                <div class="alert alert-success" role="alert"><?= $this->session->flashdata('greenalert') ?></div>
+              <?php } ?>
               <!-- Tabel -->
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -100,7 +106,7 @@
                                 <div class="modal-footer">
                                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                   <form action="<?= base_url('recipe/delete'); ?>" method="post">
-                                    <input type="hidden" name="id" value="<?= $value->recipe_id ?>">
+                                    <input type="hidden" name="recipe_id" id="recipe_id" value="<?= $value->recipe_id ?>">
                                     <input class="btn btn-danger" type="submit" name="delete" value="Delete">
                                   </form>
                                 </div>
@@ -140,18 +146,47 @@
         event.preventDefault();
         $(this).ekkoLightbox();
       });
-    });
 
-    //initialize datatable
-    $('#dataTable').dataTable({
-      "pageLength": 25,
-      "lengthMenu": [25, 50, 75, 100, 150, 200]
-    });
+      //initialize datatable
+      $('#dataTable').dataTable({
+        "pageLength": 25,
+        "lengthMenu": [25, 50, 75, 100, 150, 200],
+        "responsive": true
+      });
 
-    //trigger submit for filter
-    $('#category_id').change(function() {
-      $(this).closest('form').trigger('submit');
+      //trigger submit for filter
+      $('#category_id').change(function() {
+        $(this).closest('form').trigger('submit');
+      });
     });
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-success").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-info").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-danger").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-primary").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
   </script>
   <!-- End Script -->
 </body>

@@ -8,105 +8,76 @@ class Users extends CI_Controller
   {
     parent::__construct();
     //Do your magic here
-    $this->MRef->logged();
-    $this->MRef->sessionstart();
-    $this->maintitle = "Users - " . $this->session->userdata('appname');
-    $this->pageheading = "Users";
-    $this->load->model('MUsers', 'm');
-    $this->load->library('form_validation');
+    $this->load->model('MApp', 'm');
   }
 
   public function index()
   {
+    $auth_acces = $this->input->post('auth_acces');
     $data = array(
-      "title" => $this->maintitle,
-      "pageheading" => $this->pageheading,
-      "users_data" => $this->m->get_all()
+      "data" => $this->m->getUser(isset($auth_acces) ? $auth_acces : "")->result()
     );
-    $this->load->view('users/users', $data);
+    $this->load->view('users/view', $data);
   }
 
-  public function create()
+  //add category page
+  public function add()
+  {
+    $this->load->view('category/add', FALSE);
+  }
+  public function addaction()
   {
     $data = array(
-      'button' => 'Create',
-      'action' => site_url('users/create_action'),
-      'auth_id' => set_value('auth_id'),
-      'auth_name' => set_value('auth_name'),
-      'auth_image' => set_value('auth_image'),
-      'auth_user' => set_value('auth_user'),
-      'auth_email' => set_value('auth_email'),
-      'auth_pws' => set_value('auth_pws'),
-      'auth_token' => set_value('auth_token'),
-      'auth_create' => set_value('auth_create'),
-      'auth_verify' => set_value('auth_verify'),
+      "category_name" => $this->input->post('category_name'),
+      "category_image" => $this->m->UploadImageCategory()
     );
-    $this->load->view('users/manage', $data);
+
+    if ($this->m->insert("tb_category", $data))
+      $this->session->set_flashdata('greenalert', 'Success add category');
+    else
+      $this->session->set_flashdata('redalert', 'Failed add category');
+    header('location:' . base_url("category"));
   }
 
-  public function create_action()
+  //edit category page
+  public function edit($category_id)
   {
-    $this->_rules();
-    if ($this->form_validation->run() == FALSE) {
-      $this->create();
+    $data = array(
+      "data" => $this->m->getCategoryBy($category_id)
+    );
+    $this->load->view('category/edit', $data, FALSE);
+  }
+
+  public function editaction()
+  {
+    $category_id = $this->input->post('category_id');
+    $data = array(
+      "category_name" => $this->input->post('category_name')
+    );
+
+    $deleteimage = false;
+    if (!empty($_FILES["category_image"]["name"])) {
+      $data["category_image"] = $this->m->UploadImageCategory();
+      $deleteimage = true;
     } else {
-      $data = array(
-        'auth_id' => $this->m->KodeUser(),
-        'auth_name' => $this->input->post('auth_name', TRUE),
-        'auth_image' => $this->input->post('auth_image', TRUE),
-        'auth_access' => "ADMIN",
-        'auth_user' => $this->input->post('auth_user', TRUE),
-        'auth_email' => $this->input->post('auth_email', TRUE),
-        'auth_pws' => $this->input->post('auth_pws', TRUE),
-        'auth_create' => date('Y-m-d'),
-      );
-
-      $this->m->insert($data);
-      $this->session->set_flashdata('message', 'Create Record Success');
-      redirect(site_url('users'));
+      $data["category_image"] = $this->input->post('category_image_old');
     }
+    $this->m->update("tb_category", array("category_id" => $category_id), $data);
+    if ($deleteimage)
+      $this->m->DeletedFile($this->input->post('category_image_old'));
+    $this->session->set_flashdata('greenalert', 'Success edit recipe');
+    header('location:' . base_url("category"));
   }
 
-  public function verifychange($id)
+  //delete recipe
+  public function delete()
   {
-    $row = $this->m->get_by_id($id);
-    $data = array(
-      'auth_verify' => $row->auth_verify == "Y" ? "N" : "Y",
-    );
-
-    $this->m->update($id, $data);
-    $this->session->set_flashdata('message', 'Update Record Success');
-    redirect(site_url('users'));
-  }
-
-  public function delete($id)
-  {
-    $row = $this->m->get_by_id($id);
-    if ($row) {
-      $this->m->delete($id);
-      $this->session->set_flashdata('message', 'Delete Record Success');
-      redirect(site_url('users'));
-    } else {
-      $this->session->set_flashdata('message', 'Record Not Found');
-      redirect(site_url('users'));
-    }
-  }
-
-  public function _rules()
-  {
-    $this->form_validation->set_rules('auth_name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('auth_image', 'Image', 'trim');
-    $this->form_validation->set_rules('auth_user', 'Username', 'trim|required');
-    $this->form_validation->set_rules('auth_email', 'Email', 'trim|required');
-    $this->form_validation->set_rules('auth_pws', 'Password', 'trim');
-
-    $this->form_validation->set_rules('auth_id', 'auth_id', 'trim');
-    $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    $category_id = $this->input->post('category_id');
+    if ($this->m->delete("tb_category", array("category_id" => $category_id))) {
+      $this->m->DeletedFile($this->m->getCategoryBy($category_id)->category_image);
+      $this->session->set_flashdata('greenalert', 'Success delete category');
+    } else
+      $this->session->set_flashdata('redalert', 'Failed delete category');
+    header('location:' . base_url("category"));
   }
 }
-
-/* End of file Users.php */
-/* Location: ./application/controllers/Users.php */
-/* Please DO NOT modify this information : */
-/* Generated by Harviacode Codeigniter CRUD Generator 2019-11-29 12:43:05 */
-/* http://harviacode.com */

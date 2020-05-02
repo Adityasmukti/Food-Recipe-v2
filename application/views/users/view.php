@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>User</title>
+  <title>Users</title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>
@@ -34,8 +34,8 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"><?= $pageheading; ?></h1>
-            <a href="<?= base_url('users/create') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus-circle fa-sm text-white-50"></i> Add Users</a>
+            <h1 class="h3 mb-0 text-gray-800">Users</h1>
+            <a href="<?= base_url('users/create') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus-circle fa-sm text-white-50"></i> Add User</a>
           </div>
 
           <!-- Card -->
@@ -43,14 +43,6 @@
             <!-- Card Body -->
             <div class="card-body">
               <!-- Alert -->
-              <?php if ($this->session->userdata('message') <> '') { ?>
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                  <?= $this->session->userdata('message') ?>
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-              <?php } ?>
 
               <!-- End Alert -->
               <div class="dropdown-divider mb-4"></div>
@@ -72,23 +64,24 @@
                   </thead>
                   <tbody>
                     <?php
-                    foreach ($users_data as $users) {
+                    $i = 1;
+                    foreach ($data as $users) {
                     ?>
                       <tr>
-                        <td><?php echo $users->auth_id ?></td>
-                        <td><?php echo $users->auth_access ?></td>
-                        <td><?php echo $users->auth_name ?></td>
-                        <td><?php echo $users->auth_user ?></td>
-                        <td><?php echo $users->auth_email ?></td>
+                        <td><?= $i ?></td>
+                        <td><?= $users->auth_access ?></td>
+                        <td><?= $users->auth_name ?></td>
+                        <td><?= $users->auth_user ?></td>
+                        <td><?= $users->auth_email ?></td>
                         <td style="width: 100px;" class="text-center">
                           <a href="<?= base_url('upload/img/') . $users->auth_image ?>" data-toggle="lightbox">
-                            <img src="<?= base_url('upload/img/thumb/') . $users->auth_image ?>" alt="" class="rounded-circle" style="width:100px; height:100px;">
+                            <img src="<?= base_url('upload/img/') . $users->auth_image ?>" alt="" class="rounded-circle" style="width:100px; height:100px;">
                           </a>
                         </td>
-                        <td><?php echo $users->auth_create ?></td>
-                        <td class="text-center" style="width: 40px;">
-                          <a href="#" data-toggle="modal" data-target="#verifyModal<?= $users->auth_id ?>" class="btn-sm btn-info"><?php echo $users->auth_verify ?></a>
-                          <div class="modal fade" id="verifyModal<?= $users->auth_id ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <td><?= $users->auth_create ?></td>
+                        <td class="text-center" style="width: 80px;">
+                          <a href="#" data-toggle="modal" data-target="#verifyModal<?= $i ?>" class="btn-sm btn-info"><?= $users->auth_verify == "Y" ? "<i class='fa fa-check-square'>" : "" ?> </i></a>
+                          <div class="modal fade" id="verifyModal<?= $i ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -128,6 +121,7 @@
                         </td>
                       </tr>
                     <?php
+                      $i++;
                     }
                     ?>
                   </tbody>

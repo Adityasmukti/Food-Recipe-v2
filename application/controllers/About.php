@@ -26,10 +26,7 @@ class About extends CI_Controller
     // about page
     public function index()
     {
-        $data = [
-            "pageheading" => $this->pageheading,
-        ];
-        $this->load->view('about', $data, false);
+        $this->load->view('about', false);
     }
 }
 

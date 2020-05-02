@@ -7,23 +7,18 @@ class Auth extends CI_Controller
     {
         parent::__construct();
         //Do your magic here
-        $this->MRef->sessionstart();
-        $this->maintitle = "Login - " . $this->session->userdata('appname');
-        $this->pageheading = "Login";
-        $this->load->model('MAuth', 'm');
+        $this->load->model('MApp', 'm');
     }
 
     //login page controller
     public function index()
     {
-        $this->MRef->loggedauth();
-        $data = [
-            "title" => $this->maintitle,
-            "pageheading" => $this->pageheading,
-            "error" => false,
-            "message" => ""
-        ];
 
+        $this->load->view('auth/login');
+    }
+
+    public function login()
+    {
         $submit = $this->input->post('submit');
         if (isset($submit)) {
             $username = $this->input->post('username');
@@ -37,7 +32,7 @@ class Auth extends CI_Controller
                 }
             }
         }
-        $this->load->view('auth/login', $data);
+        # code...
     }
 
     //logout function

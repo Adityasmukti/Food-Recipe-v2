@@ -93,6 +93,24 @@ class MApp extends CI_Model
     $this->db->order_by('category_name', 'asc');
     return $this->db->get('tb_category');
   }
+  public function getCategoryBy($category_id)
+  {
+    $this->db->where('category_id', $category_id);
+    return $this->db->get('tb_category')->row();
+  }
+  // Upload Image    
+  public function UploadImageCategory()
+  {
+    $config['upload_path'] = './upload/img/'; //path folder
+    $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload("category_image")) {
+      $gbr = $this->upload->data();
+      return $gbr['file_name'];
+    }
+    return "noimage.png";
+  }
   ///=======================================================================================================
 
 
@@ -154,7 +172,12 @@ class MApp extends CI_Model
     return "noimage.png";
   }
 
-
+  public function getIdRecipe()
+  {
+    $this->db->select('MAX(recipe_id) recipe_id');
+    $this->db->from('tb_recipe');
+    return $this->db->get()->row()->recipe_id;
+  }
   ///=======================================================================================================
 
 
@@ -207,6 +230,14 @@ class MApp extends CI_Model
     $this->email->subject($subject);
     $this->email->message($message);
     return $this->email->send();
+  }
+
+  public function getUser($auth_acces)
+  {
+    if (!empty($auth_acces))
+      $this->db->where("auth_acces", $auth_acces);
+    $this->db->order_by('auth_access', 'asc');
+    return $this->db->get('tb_auth');
   }
   ///=======================================================================================================
 

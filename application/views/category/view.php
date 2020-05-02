@@ -11,6 +11,7 @@
   <title>Category</title>
   <!-- Header -->
   <?php $this->load->view('header'); ?>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" type="text/css">
   <!-- End Header -->
 </head>
 
@@ -40,6 +41,12 @@
           <div class="card shadow mb-4">
             <!-- Card Body -->
             <div class="card-body">
+              <?php if (!empty($this->session->flashdata('redalert'))) { ?>
+                <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('redalert') ?></div>
+              <?php } ?>
+              <?php if (!empty($this->session->flashdata('greenalert'))) { ?>
+                <div class="alert alert-success" role="alert"><?= $this->session->flashdata('greenalert') ?></div>
+              <?php } ?>
               <!-- Tabel -->
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -47,6 +54,7 @@
                     <tr class="text-center">
                       <th>No</th>
                       <th>Category Name</th>
+                      <th>Image</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -54,8 +62,13 @@
                     <?php $i = 1;
                     foreach ($data as $value) { ?>
                       <tr>
-                        <td style="width: 20%"><?= $i ?></td>
+                        <td style="width: 50px" class="text-center"><?= $i ?></td>
                         <td><?= $value->category_name ?></td>
+                        <td style="width: 100px;" class="text-center">
+                          <a href="<?= base_url('upload/img/') . $value->category_image ?>" data-toggle="lightbox">
+                            <img src="<?= base_url('upload/img/') . $value->category_image ?>" alt="" class="rounded" style="max-width:100%; max-height:100%;">
+                          </a>
+                        </td>
                         <td class="text-center" style="width: 80px;">
                           <a href="<?= base_url("category/edit/$value->category_id") ?>" class="btn-sm btn-primary mb-2"><i class="fas fa-edit"></i></a>
                           <a href="#" data-toggle="modal" data-target="#deleteModal<?= $i ?>" class="btn-sm btn-danger"><i class="fas fa-trash"></i></a>
@@ -73,7 +86,7 @@
                                 <div class="modal-footer">
                                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                   <form action="<?= base_url("category/delete"); ?>" method="post">
-                                    <input type="hidden" name="category_id" value="<?= $value->category_id ?>">
+                                    <input type="hidden" name="category_id" id="category_id" value="<?= $value->category_id ?>">
                                     <input class="btn btn-danger" type="submit" name="delete" value="Delete">
                                   </form>
                                 </div>
@@ -104,16 +117,49 @@
   <!-- End of Page Wrapper -->
   <!-- Script -->
   <?php $this->load->view('script'); ?>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $('#dataTable').dataTable({
         "pageLength": 25,
         "lengthMenu": [25, 50, 75, 100, 150, 200]
       });
-      setTimeout(function() {
-        $(".alert").alert('close');
-      }, 5000);
+
+      //initialize lightbox
+      $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+      });
+
     });
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-success").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-info").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-danger").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-primary").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
   </script>
   <!-- End Script -->
 </body>

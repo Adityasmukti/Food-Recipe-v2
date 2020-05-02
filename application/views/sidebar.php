@@ -5,7 +5,7 @@
     <!-- <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-laugh-wink"></i>
     </div> -->
-    <img src="<?= base_url("upload/img/" . $this->session->userdata('image')) ?>" alt="" width="50px" class="image rounded-circle">
+    <img src="<?= base_url("upload/img/" . $this->session->userdata('logo')) ?>" alt="" width="50px" class="image rounded-circle">
     <div class="sidebar-brand-text mx-3"><?= $this->session->userdata('name'); ?></div>
   </a>
 

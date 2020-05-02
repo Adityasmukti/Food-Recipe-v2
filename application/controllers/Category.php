@@ -22,70 +22,62 @@ class Category extends CI_Controller
     //add category page
     public function add()
     {
-        $data = [
-            "title" => $this->maintitle,
-            "pageheading" => $this->pageheading,
-            "state" => "Category Add",
-            "edit" => false,
-            "message" => "",
-            "error" => false,
-            "categoryid" => $this->MRef->GenerateKode("CT", "tb_category", "category_id"),
-            "category_name" => "",
-        ];
+        $this->load->view('category/add', FALSE);
+    }
+    public function addaction()
+    {
+        $data = array(
+            "category_name" => $this->input->post('category_name'),
+            "category_image" => $this->m->UploadImageCategory()
+        );
 
-        $categorykode = $this->input->post('categorykode');
-        if (isset($categorykode)) {
-            $insertcategory = [
-                "category_id" => $this->input->post('categorykode'),
-                "category_name" => $this->input->post('categoryname'),
-            ];
-            if ($this->m->insertcategory($insertcategory)) {
-                redirect('category', 'refresh');
-            } else {
-                $data["error"] = true;
-                $data["message"] = "Error when saving";
-                $data["category_name"] = $this->input->post('categoryname');
-                $this->load->view('category/manage', $data, FALSE);
-            }
-            // echo json_encode(array("insertrecipe" => $insertrecipe, "insertrecipecat" => $insertrecipecat));
-
-        } else {
-            $this->load->view('category/manage', $data, FALSE);
-        }
+        if ($this->m->insert("tb_category", $data))
+            $this->session->set_flashdata('greenalert', 'Success add category');
+        else
+            $this->session->set_flashdata('redalert', 'Failed add category');
+        header('location:' . base_url("category"));
     }
 
     //edit category page
-    public function edit($categoryid)
+    public function edit($category_id)
     {
-        $category = $this->m->getcategorybyid(base64_decode(urldecode($categoryid)));
-        $data = [
-            "title" => $this->maintitle,
-            "pageheading" => $this->pageheading,
-            "state" => "Category Edit",
-            "edit" => true,
-            "message" => "",
-            "error" => false,
-            "categoryid" => $category->category_id,
-            "category_name" => $category->category_name,
-            "urlencode" => $categoryid
-        ];
+        $data = array(
+            "data" => $this->m->getCategoryBy($category_id)
+        );
+        $this->load->view('category/edit', $data, FALSE);
+    }
 
-        $categorykode = $this->input->post('categorykode');
-        if (isset($categorykode)) {
-            $updatecategory = [
-                "category_name" => $this->input->post('categoryname'),
-            ];
-            if ($this->m->updatecategory($updatecategory, $categorykode)) {
-                redirect('category', 'refresh');
-            } else {
-                $data["error"] = true;
-                $data["message"] = "Error when saving";
-                $data["category_name"] = $this->input->post('categoryname');
-                $this->load->view('category/manage', $data, FALSE);
-            }
+    public function editaction()
+    {
+        $category_id = $this->input->post('category_id');
+        $data = array(
+            "category_name" => $this->input->post('category_name')
+        );
+
+        $deleteimage = false;
+        if (!empty($_FILES["category_image"]["name"])) {
+            $data["category_image"] = $this->m->UploadImageCategory();
+            $deleteimage = true;
         } else {
-            $this->load->view('category/manage', $data, FALSE);
+            $data["category_image"] = $this->input->post('category_image_old');
         }
+        $this->m->update("tb_category", array("category_id" => $category_id), $data);
+        if ($deleteimage)
+            $this->m->DeletedFile($this->input->post('category_image_old'));
+        $this->session->set_flashdata('greenalert', 'Success edit recipe');
+        header('location:' . base_url("category"));
+    }
+
+    //delete recipe
+    public function delete()
+    {
+        $category_id = $this->input->post('category_id');
+        if ($this->m->delete("tb_category", array("category_id" => $category_id))) {
+            $this->m->DeletedFile($this->m->getCategoryBy($category_id)->category_image);
+            $this->session->set_flashdata('greenalert', 'Success delete category');
+        } else
+            $this->session->set_flashdata('redalert', 'Failed delete category');
+        header('location:' . base_url("category"));
     }
 }
 

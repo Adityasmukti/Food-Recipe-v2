@@ -33,19 +33,17 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"><?= $pageheading ?></h1>
+            <h1 class="h3 mb-0 text-gray-800">About My Recipe</h1>
           </div>
 
           <!-- Card Main Content -->
           <div class="card">
             <div class="card-header bg-gradient-primary text-center">
               <i class="fas fa-laugh-wink"></i>
-              <h1 class="m-0 font-weight-bold mt-3">Food Recipe 1.0</h1>
+              <h1 class="m-0 font-weight-bold mt-3"><?= $this->session->userdata('appname') ?> <?= $this->session->userdata('version') ?></h1>
             </div>
             <div class="card-body text-center">
-              <p>Admin Dasboard to Manage Content Android Food Recipe</p>
-              <p>Envato Item</p>
-              <p>wifi.foodrecipe@gmail.com</p>
+              <?= htmlspecialchars_decode($this->session->userdata('about')); ?>
             </div>
           </div>
           <!-- End Card Main Content -->

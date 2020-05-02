@@ -119,9 +119,9 @@ $db[''] = array(
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
+	'hostname' => 'localhost:3316',
+	'username' => 'adityas',
+	'password' => 'adityas',
 	'database' => 'u536814740_fr',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
