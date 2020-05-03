@@ -194,13 +194,46 @@ class MApp extends CI_Model
     }
     $this->session->set_userdata($settings);
   }
+
+  public function getSettings($setting)
+  {
+    $queri = $this->db->get_where('tb_settings', array("setting_name" => $setting))->result();
+    $settings = array();
+    foreach ($queri as $value) {
+      $settings[$value->setting_value_name] = $value->setting_value_data;
+    }
+    return $settings;
+  }
+
+  public function setSettings($setting, $data)
+  {
+    foreach ($data as $key => $value) {
+      $this->db->where("setting_name", $setting);
+      $this->db->where("setting_value_name", $key);
+      $this->db->update("tb_settings", array("setting_value_data" => $value));
+    }
+  }
+
+  // Upload Image    
+  public function UploadImageLogo()
+  {
+    $config['upload_path'] = './upload/img/'; //path folder
+    $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload("logo")) {
+      $gbr = $this->upload->data();
+      return $gbr['file_name'];
+    }
+    return "noimage.png";
+  }
   ///=======================================================================================================
 
 
   ///=======================================================================================================
   /// User
   ///=======================================================================================================
-  public function SendEmailForgotPass($email)
+  public function SendEmailForgot($email, $password)
   {
     $loadsetting = $this->db->get_where('tb_settings', array("setting_name" => "Forgot Email"))->result();
     foreach ($loadsetting as $value) {
@@ -222,6 +255,13 @@ class MApp extends CI_Model
           break;
       }
     }
+
+    $row = $this->db->get_where("tb_auth", array("auth_email" => $email))->row();
+    $message = htmlspecialchars_decode($message);
+    $message = str_replace("{NAME}", $row->auth_fullname, $message);
+    $message = str_replace("{EMAIL}", $row->auth_email, $message);
+    $message = str_replace("{PASSWORD}", $password, $message);
+
     $config['newline'] = "\r\n"; //use double quotes
     $this->email->initialize($config);
     /*-----------email body ends-----------*/
@@ -232,12 +272,89 @@ class MApp extends CI_Model
     return $this->email->send();
   }
 
-  public function getUser($auth_acces)
+  public function getUser($auth_acces, $auth_verify)
   {
     if (!empty($auth_acces))
-      $this->db->where("auth_acces", $auth_acces);
+      $this->db->where("auth_access", $auth_acces);
+    if (!empty($auth_verify))
+      $this->db->where("auth_verify", $auth_verify);
     $this->db->order_by('auth_access', 'asc');
+    $this->db->order_by('auth_fullname', 'asc');
     return $this->db->get('tb_auth');
+  }
+
+  public function getUserBy($auth_id)
+  {
+    $this->db->where("auth_id", $auth_id);
+    return $this->db->get('tb_auth');
+  }
+
+  public function getAccess()
+  {
+    $this->db->select('auth_access');
+    $this->db->from('tb_auth');
+    $this->db->group_by('auth_access');
+    $this->db->order_by('auth_access', 'asc');
+    return $this->db->get();
+  }
+  // Upload Image    
+  public function UploadImageUsers()
+  {
+    $config['upload_path'] = './upload/img/'; //path folder
+    $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload("auth_image")) {
+      $gbr = $this->upload->data();
+      return $gbr['file_name'];
+    }
+    return "noimage.png";
+  }
+
+  public function cekUsers($field, $value)
+  {
+    $this->db->where($field, $value);
+    return $this->db->get('tb_auth')->num_rows() === 1;
+  }
+
+  public function SendEmailRegister($email, $password)
+  {
+    $loadsetting = $this->db->get_where('tb_settings', array("setting_name" => "Register Email"))->result();
+    foreach ($loadsetting as $value) {
+      switch ($value->setting_value_name) {
+        case 'senderemail':
+          $senderemail = $value->setting_value_data;
+          break;
+        case 'sendername':
+          $sendername = $value->setting_value_data;
+          break;
+        case 'subject':
+          $subject = $value->setting_value_data;
+          break;
+        case 'message':
+          $message = $value->setting_value_data;
+          break;
+        default:
+          $config[$value->setting_value_name] = $value->setting_value_data;
+          break;
+      }
+    }
+
+    $row = $this->db->get_where("tb_auth", array("auth_email" => $email))->row();
+    $message = htmlspecialchars_decode($message);
+    $message = str_replace("{NAME}", $row->auth_fullname, $message);
+    $message = str_replace("{EMAIL}", $row->auth_email, $message);
+    $message = str_replace("{PASSWORD}", $password, $message);
+
+    $config['newline'] = "\r\n"; //use double quotes
+    $this->email->initialize($config);
+    /*-----------email body ends-----------*/
+    $this->email->from($senderemail, $sendername); //sender's email
+    $this->email->to($email);
+    $this->email->subject($subject);
+    $this->email->message($message);
+    return $this->email->send();
+    //$error = $this->email->print_debugger();
   }
   ///=======================================================================================================
 

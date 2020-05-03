@@ -68,6 +68,25 @@ class Recipe extends CI_Controller
         }
         if ($deleteimage)
             $this->m->DeletedFile($this->input->post('recipe_image_old'));
+
+        $recipe_notif = $this->input->post('recipe_notif');
+        if (isset($recipe_notif)) {
+            $data["recipe_id"] = $recipe_id;
+            $this->load->library('fcm');
+            $this->fcm->setKey($this->session->userdata('fcmtoken'));
+            $this->fcm->setTitle($this->input->post('recipe_name'));
+            $this->fcm->setMessage($data);
+            $this->fcm->setId('');
+            $this->fcm->setIsBackground(false);
+            // set payload as null
+            $payload = array('notification' => '');
+            $this->fcm->setPayload($payload);
+            $this->fcm->setImage('');
+            $json = $this->fcm->getPush();
+            $result = $this->fcm->sendToTopic('global', $json);
+            //$r = json_decode($result);
+            //$this->session->set_flashdata('greenalert', "Notification successed send with Id Message " . ($r != null ? $r->message_id : ""));
+        }
         $this->session->set_flashdata('greenalert', 'Success edit recipe');
         header('location:' . base_url("recipe"));
     }
@@ -91,8 +110,27 @@ class Recipe extends CI_Controller
         );
 
         if ($this->m->insert("tb_recipe", $data)) {
+            $recipe_id = $this->m->getIdRecipe();
             foreach ($this->input->post("category") as $value) {
-                $this->m->insert("tb_recipe_category", array("recipe_category_recipe" => $this->m->getIdRecipe(), "recipe_category_category" => $value));
+                $this->m->insert("tb_recipe_category", array("recipe_category_recipe" => $recipe_id, "recipe_category_category" => $value));
+            }
+            $recipe_notif = $this->input->post('recipe_notif');
+            if (isset($recipe_notif)) {
+                $data["recipe_id"] = $recipe_id;
+                $this->load->library('fcm');
+                $this->fcm->setKey($this->session->userdata('fcmtoken'));
+                $this->fcm->setTitle($this->input->post('recipe_name'));
+                $this->fcm->setMessage($data);
+                $this->fcm->setId('');
+                $this->fcm->setIsBackground(false);
+                // set payload as null
+                $payload = array('notification' => '');
+                $this->fcm->setPayload($payload);
+                $this->fcm->setImage('');
+                $json = $this->fcm->getPush();
+                $result = $this->fcm->sendToTopic('global', $json);
+                //$r = json_decode($result);
+                //$this->session->set_flashdata('greenalert', "Notification successed send with Id Message " . ($r != null ? $r->message_id : ""));
             }
             $this->session->set_flashdata('greenalert', 'Success add recipe');
         } else
@@ -105,9 +143,12 @@ class Recipe extends CI_Controller
     public function delete()
     {
         $recipe_id = $this->input->post('recipe_id');
-        if ($this->m->delete("tb_recipe", array("recipe_id" => $recipe_id))) {
-            $this->m->DeletedFile($this->m->getRecipeBy($recipe_id)->row()->recipe_image);
-            $this->session->set_flashdata('greenalert', 'Success delete recipe');
+        if (isset($recipe_id) && !empty($recipe_id)) {
+            if ($this->m->delete("tb_recipe", array("recipe_id" => $recipe_id))) {
+                $this->m->DeletedFile($this->m->getRecipeBy($recipe_id)->row()->recipe_image);
+                $this->session->set_flashdata('greenalert', 'Success delete recipe');
+            } else
+                $this->session->set_flashdata('redalert', 'Failed delete recipe');
         } else
             $this->session->set_flashdata('redalert', 'Failed delete recipe');
         header('location:' . base_url("recipe"));

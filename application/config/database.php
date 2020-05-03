@@ -119,7 +119,7 @@ $db[''] = array(
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost:3316',
+	'hostname' => 'localhost',
 	'username' => 'adityas',
 	'password' => 'adityas',
 	'database' => 'u536814740_fr',

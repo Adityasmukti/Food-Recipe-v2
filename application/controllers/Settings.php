@@ -7,85 +7,123 @@ class Settings extends CI_Controller
   {
     parent::__construct();
     //Do your magic here
-    $this->MRef->logged();
-    $this->MRef->sessionstart();
-    $this->maintitle = "Settings - " . $this->session->userdata('appname');
-    $this->pageheading = "Settings";
-    $this->load->model('MSettings', 'm');
-    $this->load->library('form_validation');
+    $this->load->model('MApp', 'm');
   }
 
   // setting page
   public function index()
   {
-    $row = $this->m->getusers();
-    $data = [
-      "title" => $this->maintitle,
-      "pageheading" => $this->pageheading,
-      'action' => site_url('settings/update_action'),
-      'auth_name' => set_value('auth_name', $row->auth_name),
-      'auth_image' => set_value('auth_image', $row->auth_image),
-      'auth_user' => set_value('auth_user', $row->auth_user),
-      'auth_email' => set_value('auth_email', $row->auth_email),
-      'password' => set_value("password", ""),
-      'fcmtoken' => set_value('fcmtoken', $this->m->getfcmtoken()),
-    ];
-    $this->load->view('settings', $data, FALSE);
+    $this->application();
   }
 
-  //update setting data
-  public function update_action()
+  public function encode()
   {
-    $this->_rules();
-    if ($this->form_validation->run() == FALSE) {
-      $this->index();
-    } else {
-      $data = array(
-        'auth_name' => $this->input->post('auth_name', TRUE),
-        'auth_user' => $this->input->post('auth_user', TRUE),
-        'auth_email' => $this->input->post('auth_email', TRUE),
-      );
+    $result = $this->load->view('auth/emailverifikasi', null, true);
+    var_dump(htmlspecialchars($result, ENT_QUOTES));
+  }
 
-      $pws = $this->input->post('password', TRUE);
-      if (!empty($pws))
-        $data["auth_pws"] = $pws;
+  public function application()
+  {
+    $data = $this->m->getSettings("Application");
+    $this->load->view('settings/application', $data, FALSE);
+  }
 
-      if (isset($_FILES["fileimage"])) {
-        if ($_FILES["fileimage"]["error"] != 0) {
-          //means there is no file uploaded
-        } else {
-          $newfilename = "";
-          $filename = 'fileimage';
-          $upload = $this->MRef->UploadImage($filename, $newfilename);
-          if (!empty($upload)) {
-            $this->session->set_flashdata('message', $upload);
-            redirect(site_url('settings'));
-          } else {
-            $data["auth_image"] = $newfilename;
-          }
-        }
-      }
+  public function actionapplication()
+  {
 
-      $this->m->updateuser($this->session->userdata('auth_id'), $data);
-      $this->m->updatefcmtoken($this->input->post('fcmtoken', TRUE));
+    $data = array(
+      "name" => $this->input->post('name')
+    );
 
-      $this->session->set_flashdata('message', 'Update Record Success');
-      redirect(site_url('settings'));
+    if (!empty($_FILES["logo"]["name"])) {
+      $data["logo"] = $this->m->UploadImageLogo();
+      $this->m->DeletedFile($this->input->post('logo_old'));
     }
+    $this->m->setSettings("Application", $data);
+    $this->session->set_flashdata('greenalert', 'Success save settings');
+    header('location:' . base_url("settings/application"));
   }
-  //rule
-  public function _rules()
+
+  public function admin()
   {
-    $this->form_validation->set_rules('auth_name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('auth_image', 'Image', 'trim');
-    $this->form_validation->set_rules('auth_user', 'Username', 'trim|required');
-    $this->form_validation->set_rules('auth_email', 'Email', 'trim|required');
-    $this->form_validation->set_rules('password', 'Password', 'trim');
-    $this->form_validation->set_rules('repeatpassword', 'Repeat Password', 'trim|matches[password]');
-    $this->form_validation->set_rules('fcmtoken', 'FCM Token', 'trim|required');
-    $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    $data = $this->m->getSettings("Application");
+    $this->load->view('settings/admin', $data, FALSE);
+  }
+
+  public function actionadmin()
+  {
+    $data = array(
+      "appname" => $this->input->post('appname'),
+      "copyright" => $this->input->post('copyright'),
+      "version" => $this->input->post('version'),
+      "about" => htmlentities($this->input->post('about'), ENT_QUOTES)
+    );
+    $this->m->setSettings("Application", $data);
+    $this->session->set_flashdata('greenalert', 'Success save settings');
+    header('location:' . base_url("settings/admin"));
+  }
+
+  public function fcm()
+  {
+    $data = $this->m->getSettings("Application");
+    $this->load->view('settings/fcm', $data, FALSE);
+  }
+
+  public function actionfcm()
+  {
+    $data = array(
+      "fcmtoken" => $this->input->post('fcmtoken'),
+    );
+    $this->m->setSettings("Application", $data);
+    $this->session->set_flashdata('greenalert', 'Success save settings');
+    header('location:' . base_url("settings/fcm"));
+  }
+
+  public function registeremail()
+  {
+    $data = $this->m->getSettings("Register Email");
+    $this->load->view('settings/registeremail', $data, FALSE);
+  }
+
+  public function actionregisteremail()
+  {
+    $data = array(
+      "protocol" => $this->input->post('protocol'),
+      "smtp_host" => $this->input->post('smtp_host'),
+      "smtp_port" => $this->input->post('smtp_port'),
+      "smtp_user" => $this->input->post('smtp_user'),
+      "smtp_pass" => $this->input->post('smtp_pass'),
+      "senderemail" => $this->input->post('senderemail'),
+      "sendername" => $this->input->post('sendername'),
+      "subject" => $this->input->post('subject'),
+      "message" => htmlentities($this->input->post('message'), ENT_QUOTES)
+    );
+    $this->m->setSettings("Register Email", $data);
+    $this->session->set_flashdata('greenalert', 'Success save settings');
+    header('location:' . base_url("settings/registeremail"));
+  }
+
+  public function forgotpassemail()
+  {
+    $data = $this->m->getSettings("Forgot Email");
+    $this->load->view('settings/forgotpassemail', $data, FALSE);
+  }
+
+  public function actionforgotpassemail()
+  {
+    $data = array(
+      "protocol" => $this->input->post('protocol'),
+      "smtp_host" => $this->input->post('smtp_host'),
+      "smtp_port" => $this->input->post('smtp_port'),
+      "smtp_user" => $this->input->post('smtp_user'),
+      "smtp_pass" => $this->input->post('smtp_pass'),
+      "senderemail" => $this->input->post('senderemail'),
+      "sendername" => $this->input->post('sendername'),
+      "subject" => $this->input->post('subject'),
+      "message" => htmlentities($this->input->post('message'), ENT_QUOTES)
+    );
+    $this->m->setSettings("Forgot Email", $data);
+    $this->session->set_flashdata('greenalert', 'Success save settings');
+    header('location:' . base_url("settings/forgotpassemail"));
   }
 }
-
-
-/* End of file Settings.php */

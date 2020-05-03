@@ -72,9 +72,12 @@ class Category extends CI_Controller
     public function delete()
     {
         $category_id = $this->input->post('category_id');
-        if ($this->m->delete("tb_category", array("category_id" => $category_id))) {
-            $this->m->DeletedFile($this->m->getCategoryBy($category_id)->category_image);
-            $this->session->set_flashdata('greenalert', 'Success delete category');
+        if (isset($category_id) && !empty($category_id)) {
+            if ($this->m->delete("tb_category", array("category_id" => $category_id))) {
+                $this->m->DeletedFile($this->m->getCategoryBy($category_id)->category_image);
+                $this->session->set_flashdata('greenalert', 'Success delete category');
+            } else
+                $this->session->set_flashdata('redalert', 'Failed delete category');
         } else
             $this->session->set_flashdata('redalert', 'Failed delete category');
         header('location:' . base_url("category"));

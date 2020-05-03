@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Add User</title>
+  <title>FCM Settings</title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>
@@ -33,8 +33,8 @@
           <!-- breadcrumb -->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="<?= base_url('users') ?>">Users</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Add User</li>
+              <li class="breadcrumb-item"><a href="<?= base_url('users') ?>">Settings</a></li>
+              <li class="breadcrumb-item active" aria-current="page">FCM</li>
             </ol>
           </nav>
 
@@ -42,26 +42,22 @@
           <div class="card shadow mb-4">
             <!-- Card Header -->
             <div class="card-header">
-              <h6 class="m-0 font-weight-bold text-primary">Add User</h6>
+              <h6 class="m-0 font-weight-bold text-primary">FCM</h6>
             </div>
             <!-- Card Body -->
             <div class="card-body">
+              <?php if (!empty($this->session->flashdata('greenalert'))) { ?>
+                <div class="alert alert-success" role="alert"><?= $this->session->flashdata('greenalert') ?></div>
+              <?php } ?>
               <!--  -->
-              <form id="manage" action="<?= base_url("users/addaction") ?>" method="post" enctype="multipart/form-data">
+              <form id="manage" action="<?= base_url("settings/actionfcm") ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                  <label for="auth_access">Access</label>
-                  <select id="auth_access" name="auth_access" class="form-control">
-                    <option selected value="USER">USER</option>
-                    <option value="ADMIN">ADMIN</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="auth_email">Email</label>
-                  <input type="email" class="form-control" name="auth_email" id="auth_email" placeholder="Email" value="" required />
+                  <label for="fcmtoken">FCM Token</label>
+                  <textarea class="form-control" id="fcmtoken" name="fcmtoken" rows="4" placeholder="FCM Token" required><?= $fcmtoken ?></textarea>
                 </div>
                 <hr>
                 <div class="form-group">
-                  <a href="<?= base_url('users') ?>" class="btn btn-primary float-right">Back</a>
+                  <a href="<?= base_url('recipe') ?>" class="btn btn-primary float-right">Back</a>
                   <input type="submit" value="Save" class="btn btn-primary float-right mr-3">
                 </div>
               </form>
@@ -82,6 +78,14 @@
   <!-- Script -->
   <?php $this->load->view('script'); ?>
   <!-- End Script -->
+
+  <script>
+    window.setTimeout(function() {
+      $(".alert-success").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
 </body>
 
 </html>
