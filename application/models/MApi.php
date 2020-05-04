@@ -9,66 +9,6 @@ class MApi extends CI_Model
     //Do your magic here
   }
 
-  // Recipe Function
-  //=========================================================================
-  // Get recipe data
-  public function getRecipe($id, $category, $recipename, $ingredient, $instruction, &$rows, $start = 0, $limit = 10)
-  {
-    $queri = "SELECT `R`.`recipe_id`, `category`, `recipe_name`, `recipe_ingredient`, `recipe_instruction`, `recipe_image`, CONCAT('$this->pathrecipe', `recipe_image`) `image`, CONCAT('$this->pathrecipemedium', `recipe_image`) `imagemedium`, CONCAT('$this->pathrecipethumb', `recipe_image`) `imagethumb` FROM `$this->tblrecipe` `R` INNER JOIN `$this->tblrecipecat` `RC` ON `RC`.`recipe_id`=`R`.`recipe_id` INNER JOIN `$this->tblcategory` `CT` ON `CT`.`category_id`=`RC`.`category_id` INNER JOIN (SELECT `recipe_id`, GROUP_CONCAT(`category_name`) `category` FROM `$this->tblrecipecat` `A` INNER JOIN `$this->tblcategory` `B` ON `A`.`category_id` = `B`.`category_id` GROUP BY `A`.`recipe_id`) `C` ON `C`.`recipe_id` = `R`.`recipe_id` WHERE 1=1 " . (empty($id) ? "" : "AND `R`.`recipe_id` = " . $this->db->excape($id)) . (empty($recipename) ? "" : " AND `recipe_name` LIKE '%" . $this->db->escape_like_str($recipename) . "%' ") . (empty($ingredient) ? "" : " AND `recipe_ingredient` LIKE '%" . $this->db->escape_like_str($ingredient) . "%' ") . (empty($instruction) ? "" : " AND `recipe_instruction` LIKE '%" . $this->db->escape_like_str($instruction) . "%' ") . (empty($category) ? "" : " AND `category_name` LIKE '%" . $this->db->escape_like_str($category) . "%' ");
-    $rows = $this->db->query($queri)->num_rows();
-    return $this->db->query($queri . " ORDER BY `recipe_name` ASC LIMIT " . $this->db->escape_str($start) . ", " . $this->db->escape_str($limit) . ";")->result();
-  }
-
-  // Category Function
-  //=========================================================================
-  // Get Category data
-  public function getCategory(&$rows, $start = 0, $limit = 10)
-  {
-    $queri = "SELECT `C`.`category_id`, `category_name`, `recipe_image` `category_image`, CONCAT('$this->pathrecipe', `recipe_image`) `image`, CONCAT('$this->pathrecipemedium', `recipe_image`) `imagemedium`, CONCAT('$this->pathrecipethumb', `recipe_image`) `imagethumb` FROM `tb_category` `C` LEFT JOIN(SELECT `RC`.`category_id`, `R`.`recipe_image` FROM `tb_recipe_category` `RC`  LEFT JOIN `tb_recipe` `R` ON `R`.`recipe_id`=`RC`.`recipe_id` WHERE `R`.`recipe_image` <>'' ORDER BY RAND())`RC` ON `RC`.`category_id`=`C`.`category_id` GROUP BY `C`.`category_id` ";
-    $rows = $this->db->query($queri)->num_rows();
-    return $this->db->query($queri . "ORDER BY `category_name` ASC LIMIT " . $this->db->escape_str($start) . ", " . $this->db->escape_str($limit) . ";")->result();
-  }
-
-  // Auth Function
-  //=========================================================================
-  // Login 
-  public function login($u, $p)
-  {
-    $this->db->where("(auth_user=" . $this->db->escape($u) . " OR auth_email=" . $this->db->escape($u) . ") ");
-    $this->db->where("auth_pws", md5($this->db->escape($p)));
-    $result = $this->db->get($this->tblauth, 1);
-    if ($result->num_rows() > 0) {
-      $data = array(
-        "rows" => $result->num_rows(),
-        "auth_id" => $result->row()->auth_id,
-        "auth_name" => $result->row()->auth_name,
-        "auth_access" => $result->row()->auth_access,
-        "auth_user" => $result->row()->auth_user,
-        "auth_token" => $result->row()->auth_token,
-        "auth_email" => $result->row()->auth_email,
-        "auth_verify" => $result->row()->auth_verify,
-        "auth_image" => $result->row()->auth_image,
-        "imagethumb" => empty($result->row()->auth_image) ? "" : $this->pathpemain . $result->row()->auth_image,
-        "imagemedium" => empty($result->row()->auth_image) ? "" : $this->pathpemain . $result->row()->auth_image,
-        "imageoriginal" => empty($result->row()->auth_image) ? "" : $this->pathpemain . $result->row()->auth_image,
-      );
-    } else $data["rows"] = 0;
-    return $data;
-  }
-
-  //Cek user
-  public function cekuser($field, $value)
-  {
-    return $this->db->get_where($this->tblauth, array($field => $value), 1)->num_rows() == 0 ? true : false;
-  }
-
-  // Generate kode Username
-  public function KodeUser()
-  {
-    $this->load->model('MRef', 'r');
-    return $this->r->GenerateKode("US", $this->tblauth, "auth_id");
-  }
-
   // CUD function
   //=========================================================================
   // Create data
@@ -103,32 +43,15 @@ class MApi extends CI_Model
     return 0;
   }
 
-  // File Function
-  // Upload image    
-  public function UploadImage($path, $filename, &$newfilename)
+  public function DeletedFile($filename)
   {
-    $this->load->library('upload');
-    $config['upload_path'] = $path; //path folder
-    $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
-    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
-    $this->upload->initialize($config);
-    if ($this->upload->do_upload($filename)) {
-      $gbr = $this->upload->data();
-      $newfilename = $gbr['file_name'];
-      return "";
-    } else {
-      $newfilename = "";
-      return $this->upload->display_errors();
-    }
-  }
-
-  // Delete image
-  public function deletedFile($pathfilename)
-  {
+    # code...
     try {
-      if (!empty($pathfilename)) {
-        if (file_exists($pathfilename))
-          unlink($pathfilename);
+      if (!empty($filename)) {
+        //code...
+        $file = './upload/img/' . $filename;
+        if (file_exists($file))
+          unlink($file);
         return true;
       }
     } catch (\Throwable $th) {
@@ -144,34 +67,193 @@ class MApi extends CI_Model
     return $this->db->get('version', 1)->result();
   }
 
-  // Sending email to user
-  function SendEmail($email, $subject, $message)
+  public function GeneratePassword()
   {
-    // Load PHPMailer library
-    $this->load->library('phpmailer_lib');
-    // PHPMailer object
-    $mail = $this->phpmailer_lib->load();
-    // SMTP configuration
-    $mail->isSMTP();
-    $mail->Host     = 'smtp.gmail.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'afoodrecipe@gmail.com';
-    $mail->Password = 'AAY0S7yQ8ZSNT6hSXi';
-    $mail->SMTPSecure = 'ssl';
-    $mail->Port     = 465;
-    //set from
-    $mail->setFrom('info@foodrecipe.com', 'Food Recipe');
-    $mail->addReplyTo('info@foodrecipe.com', 'Food Recipe');
-    // Add a recipient
-    $mail->addAddress($email);
-    // Email subject
-    $mail->Subject = $subject;
-    // Set email format to HTML
-    $mail->isHTML(true);
-    // Email body content
-    $mail->Body = $message;
-    // Send email
-    return $mail->send();
+    $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $pass = array(); //remember to declare $pass as an array
+    $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+    for ($i = 0; $i < 8; $i++) {
+      $n = rand(0, $alphaLength);
+      $pass[] = $alphabet[$n];
+    }
+    return implode($pass);
+  }
+
+  // Recipe Function
+  //=========================================================================
+  // Get recipe data
+  public function getRecipe($category_id, $recipe_name, $recipe_ingredient, $recipe_instruction)
+  {
+    if (!empty($category_id))
+      $this->db->where('category_id', $category_id);
+    if (!empty($recipe_name))
+      $this->db->like('recipe_name', $recipe_name);
+    if (!empty($recipe_ingredient))
+      $this->db->like('recipe_ingredient', $recipe_ingredient);
+    if (!empty($recipe_instruction))
+      $this->db->like('recipe_instruction', $recipe_instruction);
+    $this->db->select("recipe_id, recipe_name, recipe_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", recipe_image) recipe_image_link, category, recipe_ingredient, recipe_instruction");
+    $this->db->from('tb_recipe');
+    $this->db->join("tb_recipe_category", 'recipe_category_recipe=recipe_id', 'left');
+    $this->db->join("tb_category", 'recipe_category_category=category_id', 'left');
+    $this->db->join("(SELECT recipe_category_recipe, GROUP_CONCAT(category_name SEPARATOR ', ') category FROM tb_recipe_category LEFT JOIN tb_category ON recipe_category_category = category_id GROUP BY recipe_category_recipe) D", 'recipe_id = D.recipe_category_recipe', 'left');
+    $this->db->group_by('recipe_id');
+    return $this->db->get();
+  }
+
+  public function getRecipeBy($recipe_id)
+  {
+    $this->db->select("recipe_id, recipe_name, recipe_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", recipe_image) recipe_image_link, recipe_ingredient, recipe_instruction");
+    $this->db->from('tb_recipe');
+    $this->db->where('recipe_id', $recipe_id);
+    return $this->db->get();
+  }
+
+  public function getRecipeCategoryBy($recipe_category_recipe)
+  {
+    $this->db->select("category_id, category_name, category_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", category_image) category_image_link");
+    $this->db->from("tb_recipe_category");
+    $this->db->join('tb_category', 'tb_category.category_id = tb_recipe_category.recipe_category_recipe', 'left');
+    $this->db->where("recipe_category_recipe", $recipe_category_recipe);
+    return $this->db->get();
+  }
+
+  // Category Function
+  //=========================================================================
+  // Get Category data
+  public function getCategory()
+  {
+    $this->db->select("category_id, category_name, category_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", category_image) category_image_link");
+    $this->db->from('tb_category');
+    return $this->db->get();
+  }
+
+  // Users Function
+  //=========================================================================
+  // login
+  public function login($auth_email, $auth_pws)
+  {
+    $this->db->select("auth_id, auth_fullname, auth_access, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
+    $this->db->from("tb_auth");
+    $this->db->where('auth_email', $auth_email);
+    $this->db->where('auth_pws', SHA1($auth_pws));
+    $this->db->where('auth_access', "USER");
+
+    return $this->db->get();
+  }
+
+  public function cek_akun($tabel, $data)
+  {
+    return $this->db->get_where($tabel, $data)->num_rows() > 0;
+  }
+
+  public function getUserBy($auth_id)
+  {
+    $this->db->select("auth_id, auth_fullname, auth_access, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
+    $this->db->from("tb_auth");
+    $this->db->where("auth_id", $auth_id);
+    return $this->db->get()->row();
+  }
+
+  public function getUserByEmail($auth_email)
+  {
+    $this->db->select("auth_id, auth_fullname, auth_access, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
+    $this->db->from("tb_auth");
+    $this->db->where("auth_email", $auth_email);
+    return $this->db->get()->row();
+  }
+
+  public function SendEmailRegister($email, $password)
+  {
+    $loadsetting = $this->db->get_where('tb_settings', array("setting_name" => "Register Email"))->result();
+    foreach ($loadsetting as $value) {
+      switch ($value->setting_value_name) {
+        case 'senderemail':
+          $senderemail = $value->setting_value_data;
+          break;
+        case 'sendername':
+          $sendername = $value->setting_value_data;
+          break;
+        case 'subject':
+          $subject = $value->setting_value_data;
+          break;
+        case 'message':
+          $message = $value->setting_value_data;
+          break;
+        default:
+          $config[$value->setting_value_name] = $value->setting_value_data;
+          break;
+      }
+    }
+
+    $row = $this->db->get_where("tb_auth", array("auth_email" => $email))->row();
+    $message = htmlspecialchars_decode($message);
+    $message = str_replace("{NAME}", $row->auth_fullname, $message);
+    $message = str_replace("{EMAIL}", $row->auth_email, $message);
+    $message = str_replace("{PASSWORD}", $password, $message);
+
+    $config['newline'] = "\r\n"; //use double quotes
+    $this->email->initialize($config);
+    /*-----------email body ends-----------*/
+    $this->email->from($senderemail, $sendername); //sender's email
+    $this->email->to($email);
+    $this->email->subject($subject);
+    $this->email->message($message);
+    return $this->email->send();
+    //$error = $this->email->print_debugger();
+  }
+
+  public function SendEmailForgot($email, $password)
+  {
+    $loadsetting = $this->db->get_where('tb_settings', array("setting_name" => "Forgot Email"))->result();
+    foreach ($loadsetting as $value) {
+      switch ($value->setting_value_name) {
+        case 'senderemail':
+          $senderemail = $value->setting_value_data;
+          break;
+        case 'sendername':
+          $sendername = $value->setting_value_data;
+          break;
+        case 'subject':
+          $subject = $value->setting_value_data;
+          break;
+        case 'message':
+          $message = $value->setting_value_data;
+          break;
+        default:
+          $config[$value->setting_value_name] = $value->setting_value_data;
+          break;
+      }
+    }
+
+    $row = $this->db->get_where("tb_auth", array("auth_email" => $email))->row();
+    $message = htmlspecialchars_decode($message);
+    $message = str_replace("{NAME}", $row->auth_fullname, $message);
+    $message = str_replace("{EMAIL}", $row->auth_email, $message);
+    $message = str_replace("{PASSWORD}", $password, $message);
+
+    $config['newline'] = "\r\n"; //use double quotes
+    $this->email->initialize($config);
+    /*-----------email body ends-----------*/
+    $this->email->from($senderemail, $sendername); //sender's email
+    $this->email->to($email);
+    $this->email->subject($subject);
+    $this->email->message($message);
+    return $this->email->send();
+  }
+
+  // Upload Image    
+  public function UploadImageUser()
+  {
+    $config['upload_path'] = './upload/img/'; //path folder
+    $config['allowed_types'] = 'gif|jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
+    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload("auth_image")) {
+      $gbr = $this->upload->data();
+      return $gbr['file_name'];
+    }
+    return "noimage.png";
   }
 }
 
