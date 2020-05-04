@@ -39,6 +39,12 @@ class Settings extends CI_Controller
       $data["logo"] = $this->m->UploadImageLogo();
       $this->m->DeletedFile($this->input->post('logo_old'));
     }
+
+    if (!empty($_FILES["favicon"]["name"])) {
+      $data["favicon"] = $this->m->UploadImageFavicon();
+      $this->m->DeletedFile($this->input->post('favicon_old'));
+    }
+
     $this->m->setSettings("Application", $data);
     $this->session->set_flashdata('greenalert', 'Success save settings');
     header('location:' . base_url("settings/application"));

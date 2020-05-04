@@ -5,7 +5,7 @@
     <!-- <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-laugh-wink"></i>
     </div> -->
-    <img src="<?= base_url("upload/img/" . $this->session->userdata('logo')) ?>" alt="" width="50px" class="image rounded-circle">
+    <img src="<?= base_url("upload/img/"  . (empty($this->session->userdata('logo')) ? "logo.png" : $this->session->userdata('logo'))) ?>" alt="" width="50px" class="image rounded-circle">
     <div class="sidebar-brand-text mx-3"><?= $this->session->userdata('name'); ?></div>
   </a>
 
@@ -14,28 +14,28 @@
 
   <!-- Nav Item - Recipe -->
   <li class="nav-item <?php echo $this->uri->segment(1) === "recipe" ? "active" : "";
-                      echo $this->uri->segment(1) == "" ? "active" : ""; ?>">
+                      echo $this->uri->segment(1) === "" ? "active" : ""; ?>">
     <a class="nav-link" href="<?= base_url('recipe') ?>">
       <i class="fas fa-fw fa-hamburger"></i>
       <span>Recipe</span></a>
   </li>
 
   <!-- Nav Item - Notification -->
-  <li class="nav-item <?= $this->uri->segment(1) == "notification" ? "active" : ""; ?>">
+  <li class="nav-item <?= $this->uri->segment(1) === "notification" ? "active" : ""; ?>">
     <a class="nav-link" href="<?= base_url('notification') ?>">
       <i class="fas fa-fw fa-bell"></i>
       <span>Notification</span></a>
   </li>
 
   <!-- Nav Item - Category -->
-  <li class="nav-item <?= $this->uri->segment(1) == "category" ? "active" : ""; ?>">
+  <li class="nav-item <?= $this->uri->segment(1) === "category" ? "active" : ""; ?>">
     <a class="nav-link" href="<?= base_url('category') ?>">
       <i class="fas fa-fw fa-list"></i>
       <span>Category</span></a>
   </li>
 
   <!-- Nav Item - Users -->
-  <li class="nav-item <?= $this->uri->segment(1) == "users" ? "active" : ""; ?>">
+  <li class="nav-item <?= $this->uri->segment(1) === "users" ? "active" : ""; ?>">
     <a class="nav-link" href="<?= base_url('users') ?>">
       <i class="fas fa-fw fa-user"></i>
       <span>Users</span></a>
@@ -55,12 +55,12 @@
       <i class="fas fa-fw fa-wrench"></i>
       <span>Setting</span>
     </a>
-    <div id="collapsePages" class="collapse <?= $this->uri->segment(2) == "" ? "" : "show"; ?>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+    <div id="collapsePages" class="collapse <?= $this->uri->segment(2) === "" ? "" : "show"; ?>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item <?= $this->uri->segment(2) == "application" ? "active" : ""; ?>" href="<?= base_url('settings/application') ?>">Application</a>
-        <a class="collapse-item <?= $this->uri->segment(2) == "fcm" ? "active" : ""; ?>" href="<?= base_url('settings/fcm') ?>">FCM</a>
-        <a class="collapse-item <?= $this->uri->segment(2) == "registeremail" ? "active" : ""; ?>" href="<?= base_url('settings/registeremail') ?>">Register Email</a>
-        <a class="collapse-item <?= $this->uri->segment(2) == "forgotpassemail" ? "active" : ""; ?>" href="<?= base_url('settings/forgotpassemail') ?>">Forgot Password Email</a>
+        <a class="collapse-item <?= $this->uri->segment(2) === "application" ? "active" : ""; ?>" href="<?= base_url('settings/application') ?>">Application</a>
+        <a class="collapse-item <?= $this->uri->segment(2) === "fcm" ? "active" : ""; ?>" href="<?= base_url('settings/fcm') ?>">FCM</a>
+        <a class="collapse-item <?= $this->uri->segment(2) === "registeremail" ? "active" : ""; ?>" href="<?= base_url('settings/registeremail') ?>">Register Email</a>
+        <a class="collapse-item <?= $this->uri->segment(2) === "forgotpassemail" ? "active" : ""; ?>" href="<?= base_url('settings/forgotpassemail') ?>">Forgot Password Email</a>
       </div>
     </div>
   </li>

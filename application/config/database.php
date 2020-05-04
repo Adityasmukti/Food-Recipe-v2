@@ -76,31 +76,9 @@ $query_builder = TRUE;
 $db[''] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'u8063596_ssb',
-	'password' => 'E=Cg@9uTnru+',
-	'database' => 'u8063596_ssb',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
-
-$db[''] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost:3316',
-	'username' => 'root',
-	'password' => 'gading585',
-	'database' => 'foodrecipe',
+	'username' => 'u536814740_fr',
+	'password' => 'Lr6RipTUn7SPsUw',
+	'database' => 'u536814740_fr',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -118,6 +96,28 @@ $db[''] = array(
 );
 
 $db['default'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost:3316',
+	'username' => 'adityas',
+	'password' => 'adityas',
+	'database' => 'u536814740_fr',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+$db[''] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'adityas',

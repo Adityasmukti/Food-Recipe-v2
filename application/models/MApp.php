@@ -227,6 +227,20 @@ class MApp extends CI_Model
     }
     return "noimage.png";
   }
+
+  // Upload Image    
+  public function UploadImageFavicon()
+  {
+    $config['upload_path'] = './upload/img/'; //path folder
+    $config['allowed_types'] = 'gif|jpg|png|jpeg|ico'; //type yang dapat diakses bisa anda sesuaikan
+    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $this->upload->initialize($config);
+    if ($this->upload->do_upload("favicon")) {
+      $gbr = $this->upload->data();
+      return $gbr['file_name'];
+    }
+    return "noimage.png";
+  }
   ///=======================================================================================================
 
 
