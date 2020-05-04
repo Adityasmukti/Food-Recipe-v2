@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Forgot Password Email Settings</title>
+  <title>Forgot Password Email Settings - <?= $this->session->userdata('name');?></title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>

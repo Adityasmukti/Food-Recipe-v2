@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Register Email Settings</title>
+  <title>Register Email Settings - <?= $this->session->userdata('name');?></title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>

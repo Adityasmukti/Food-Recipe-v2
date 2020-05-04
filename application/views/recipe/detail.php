@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Detail Recipe</title>
+  <title>Detail Recipe - <?= $this->session->userdata('name');?></title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>

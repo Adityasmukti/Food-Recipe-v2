@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Category</title>
+  <title>Category - <?= $this->session->userdata('name');?></title>
   <!-- Header -->
   <?php $this->load->view('header'); ?>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" type="text/css">

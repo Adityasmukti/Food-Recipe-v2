@@ -48,14 +48,13 @@
   <div class="sidebar-heading">
     Addons
   </div>
-
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item <?= $this->uri->segment(1) == "settings" ? "active" : ""; ?>">
-    <a class="nav-link <?= $this->uri->segment(2) == "" ? "collapsed" : ""; ?>" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+    <a class="nav-link <?= $this->uri->segment(1) !== "settings" || $this->uri->segment(2) == "" ? "collapsed" : ""; ?>" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
       <i class="fas fa-fw fa-wrench"></i>
       <span>Setting</span>
     </a>
-    <div id="collapsePages" class="collapse <?= $this->uri->segment(2) === "" ? "" : "show"; ?>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+    <div id="collapsePages" class="collapse <?= $this->uri->segment(1) !== "settings" || $this->uri->segment(2) === "" ? "" : "show"; ?>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item <?= $this->uri->segment(2) === "application" ? "active" : ""; ?>" href="<?= base_url('settings/application') ?>">Application</a>
         <a class="collapse-item <?= $this->uri->segment(2) === "fcm" ? "active" : ""; ?>" href="<?= base_url('settings/fcm') ?>">FCM</a>

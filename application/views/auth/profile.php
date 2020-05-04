@@ -8,11 +8,10 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Profile</title>
+  <title>Profile - <?= $this->session->userdata('name'); ?></title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" type="text/css">
   <!-- End Header -->
 </head>
 
@@ -34,100 +33,58 @@
           <!-- breadcrumb -->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item active" aria-current="page">Recipe</li>
+              <li class="breadcrumb-item active" aria-current="page">Profile</li>
             </ol>
           </nav>
 
-          <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"><?= $pageheading; ?></h1>
-            <a href="<?= base_url('recipe/add') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus-circle fa-sm text-white-50"></i> Add Recipe</a>
-          </div>
-
           <!-- Card -->
           <div class="card shadow mb-4">
+            <!-- Card Header -->
+            <div class="card-header">
+              <h6 class="m-0 font-weight-bold text-primary">Profile</h6>
+            </div>
             <!-- Card Body -->
             <div class="card-body">
-              <!-- filter select -->
-              <form method="get" action="<?= base_url('recipe/index') ?>">
-                <div class="form-row">
-                  <div class="form-group col-md-3">
-                    <label for="kategori">Category</label>
-                    <select id="kategori" name="category" class="form-control">
-                      <option selected value="">Choose...</option>
-                      <?php foreach ($kategori as $v) { ?>
-                        <option value='<?= $v->category_id ?>' <?= $idkategori == $v->category_id ? 'selected' : '' ?>><?= $v->category_name ?></option>";
-                      <?php } ?>
-                    </select>
-                  </div>
+              <!--  -->
+              <?php if (!empty($this->session->flashdata('redalert'))) { ?>
+                <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('redalert') ?></div>
+              <?php } ?>
+              <?php if (!empty($this->session->flashdata('greenalert'))) { ?>
+                <div class="alert alert-success" role="alert"><?= $this->session->flashdata('greenalert') ?></div>
+              <?php } ?>
+              <div class="form-group">
+                <label for="auth_email">Email</label>
+                <input type="email" id="auth_email" name="auth_email" class="form-control" value="<?= $data->auth_email; ?>" placeholder="Email" readonly>
+              </div>
+              <form id="manage" action="<?= base_url('profile/actionprofile'); ?>" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="auth_id" name="auth_id" class="form-control" value="<?= $data->auth_id ?>">
+                <div class="form-group">
+                  <label for="auth_fullname">Name</label>
+                  <input type="text" id="auth_fullname" name="auth_fullname" class="form-control" value="<?= $data->auth_fullname ?>" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                  <label for="auth_pws">Password</label>
+                  <input type="password" id="auth_pws" name="auth_pws" class="form-control" value="" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <label for="auth_pws2">Retype Password</label>
+                  <input type="password" id="auth_pws2" name="auth_pws2" class="form-control" value="" placeholder="Retype Password">
+                </div>
+                <div class="form-group">
+                  <label for="auth_image">User image</label><br>
+                  <img src="<?= base_url("upload/img/$data->auth_image") ?>" alt="" width="200px">
+                  <p></p>
+                  <input type="file" class="form-control-file" id="auth_image" name="auth_image">
+                  <input type="hidden" id="auth_image_old" name="auth_image_old" class="form-control" value="<?= $data->auth_image ?>">
+                </div>
+                <hr>
+                <div class="form-group">
+                  <input type="submit" value="Save" class="btn btn-primary float-right mr-3">
                 </div>
               </form>
-              <!-- end filter select -->
-              <div class="dropdown-divider mb-4"></div>
-              <!-- Tabel -->
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr class="text-center">
-                      <th>Recipe Id</th>
-                      <th>Recipe Name</th>
-                      <th>Image</th>
-                      <th>Ingredient</th>
-                      <th>Instruction</th>
-                      <th>Category</th>
-                      <th>Detail</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $i = 0;
-                    foreach ($table as $value) { ?>
-                      <tr>
-                        <td><?= $value->recipe_id ?></td>
-                        <td><?= $value->recipe_name ?></td>
-                        <td style="width: 100px;" class="text-center">
-                          <a href="<?= base_url('upload/img/') . $value->recipe_image ?>" data-toggle="lightbox">
-                            <img src="<?= base_url('upload/img/thumb/') . $value->recipe_image ?>" alt="" class="rounded-circle" style="max-width:100%; max-height:100%;">
-                          </a>
-                        </td>
-                        <td><?= $value->recipe_ingredient ?></td>
-                        <td><?= $value->recipe_instruction ?></td>
-                        <td><?= $value->category ?></td>
-                        <td class="text-center" style="width: 40px;">
-                          <a href="<?= base_url('recipe/detail/') . $id[$i]; ?>" class="btn-sm btn-primary mb-2"><i class="fas fa-search"></i></a>
-                        </td>
-                        <td class="text-center" style="width: 80px;">
-                          <a href="<?= base_url('recipe/edit/') . $id[$i]; ?>" class="btn-sm btn-primary mb-2"><i class="fas fa-edit"></i></a>
-                          <a href="#" data-toggle="modal" data-target="#deleteModal<?= $value->recipe_id ?>" class="btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-                          <!-- Logout Modal-->
-                          <div class="modal fade" id="deleteModal<?= $value->recipe_id ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Delete data?</h5>
-                                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">Are you sure for delete Recipe data.</div>
-                                <div class="modal-footer">
-                                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                  <a class="btn btn-danger" href="login.html">Delete</a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    <?php $i++;
-                    } ?>
-                  </tbody>
-                </table>
-              </div>
-              <!-- End Table -->
+              <!--  -->
             </div>
           </div>
-
         </div>
         <!-- /.container-fluid -->
       </div>
@@ -141,24 +98,33 @@
   <!-- End of Page Wrapper -->
   <!-- Script -->
   <?php $this->load->view('script'); ?>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js.map"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-
-      $('#dataTable').dataTable({
-        "pageLength": 25,
-        "lengthMenu": [25, 50, 75, 100, 150, 200]
+  <script>
+    window.setTimeout(function() {
+      $(".alert-success").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
       });
-
-      $('#kategori').change(function() {
-        $(this).closest('form').trigger('submit');
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-info").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
       });
-      $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-        event.preventDefault();
-        $(this).ekkoLightbox();
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-danger").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
       });
-    });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-primary").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
   </script>
   <!-- End Script -->
 </body>

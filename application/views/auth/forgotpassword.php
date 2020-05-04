@@ -28,16 +28,13 @@
                   <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('redalert') ?></div>
                 <?php } ?>
               </div>
-              <form class="user" method="post" action="<?= base_url('login/validate') ?>">
+              <form class="user" method="post" action="<?= base_url('forgotpassword/reset') ?>">
                 <div class="form-group">
                   <input type="email" class="form-control form-control-user" id="auth_email" aria-describedby="emailHelp" placeholder="Enter Email Address" name="auth_email" required>
                 </div>
-                <div class="form-group">
-                  <input type="password" class="form-control form-control-user" id="auth_pws" placeholder="Enter Password" name="auth_pws" required>
-                </div>
-                <input type="submit" class="btn btn-primary btn-user btn-block text-gray-900" name="submit" value="Login" placeholder="Login" style="font-size: 18px">
+                <input type="submit" class="btn btn-primary btn-user btn-block text-gray-900" name="submit" value="Reset" placeholder="Reset" style="font-size: 18px">
               </form>
-              <p></p><a href="<?= base_url("forgotpassword") ?>" class="float-right mr-3">Forgot Password</a>
+              <p></p><a href="<?= base_url("login") ?>" class="float-right mr-3">Login</a>
             </div>
           </div>
         </div>

@@ -21,6 +21,9 @@ class About extends CI_Controller
     {
         parent::__construct();
         //Do your magic here
+    if ($this->session->userdata('logged_in') !== TRUE) {
+        redirect('login');
+      }
     }
 
     // about page
