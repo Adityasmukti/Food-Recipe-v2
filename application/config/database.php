@@ -95,7 +95,7 @@ $db[''] = array(
 	'save_queries' => TRUE
 );
 
-$db['default'] = array(
+$db[''] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost:3316',
 	'username' => 'adityas',
@@ -117,7 +117,7 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 
-$db[''] = array(
+$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'adityas',

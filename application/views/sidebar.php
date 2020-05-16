@@ -48,7 +48,6 @@
   <div class="sidebar-heading text-white">
     Addons
   </div>
-
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item <?= $this->uri->segment(1) == "settings" ? "active" : ""; ?>">
     <a class="nav-link text-white <?= $this->uri->segment(2) == "" ? "collapsed" : ""; ?>" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">

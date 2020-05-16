@@ -10,6 +10,9 @@ class Notification extends CI_Controller
         parent::__construct();
         //Do your magic here
         $this->load->model('MApp', 'm');
+        if ($this->session->userdata('logged_in') !== TRUE) {
+          redirect('login');
+        }
     }
 
     //notification FCM page

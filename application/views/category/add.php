@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Add Categori</title>
+  <title>Add Categori - <?= $this->session->userdata('name'); ?></title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>
