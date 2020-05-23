@@ -27,9 +27,9 @@
                 <?php if (!empty($this->session->flashdata('redalert'))) { ?>
                   <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('redalert') ?></div>
                 <?php } ?>
-              <?php if (!empty($this->session->flashdata('greenalert'))) { ?>
-                <div class="alert alert-success" role="alert"><?= $this->session->flashdata('greenalert') ?></div>
-              <?php } ?>
+                <?php if (!empty($this->session->flashdata('greenalert'))) { ?>
+                  <div class="alert alert-success" role="alert"><?= $this->session->flashdata('greenalert') ?></div>
+                <?php } ?>
               </div>
               <form class="user" method="post" action="<?= base_url('forgotpassword/reset') ?>">
                 <div class="form-group">
@@ -53,6 +53,13 @@
   <script>
     window.setTimeout(function() {
       $(".alert-danger").fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 3000);
+  </script>
+  <script>
+    window.setTimeout(function() {
+      $(".alert-success").fadeTo(500, 0).slideUp(500, function() {
         $(this).remove();
       });
     }, 3000);

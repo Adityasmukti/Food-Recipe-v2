@@ -71,11 +71,13 @@
 
                   <div class="form-group">
                     <label for="recipe_ingredient">Recipe Ingredient</label>
+                   <p>use the "-" sign to separate the ingredients. examples: ingredients1-ingredients-2.</p>
                     <textarea class="form-control" id="recipe_ingredient" name="recipe_ingredient" rows="4" required><?= $value->recipe_ingredient; ?></textarea>
                   </div>
 
                   <div class="form-group">
                     <label for="recipe_instruction">Recipe Instuction</label>
+                    <p>use the "-" sign to separate the instuction. examples: instuction1-instuctions-2.</p>
                     <textarea class="form-control" id="recipe_instruction" name="recipe_instruction" rows="4" required><?= $value->recipe_instruction; ?></textarea>
                   </div>
 

@@ -237,6 +237,8 @@ class MApp extends CI_Model
     $this->db->from("tb_auth");
     $this->db->where("auth_email", $auth_email);
     $this->db->where("auth_pws", SHA1($auth_pws));
+    $this->db->where('auth_access', 'ADMIN');
+
     return $this->db->get();
   }
 

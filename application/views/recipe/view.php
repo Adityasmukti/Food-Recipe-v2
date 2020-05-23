@@ -70,8 +70,8 @@
                   <thead>
                     <tr class="text-center">
                       <th>No</th>
-                      <th>Recipe Name</th>
                       <th>Image</th>
+                      <th>Recipe Name</th>
                       <th>Category</th>
                       <th>Action</th>
                     </tr>
@@ -81,15 +81,15 @@
                     foreach ($data as $value) { ?>
                       <tr>
                         <td style="width: 30px" class="text-center"><?= $i ?></td>
-                        <td><?= $value->recipe_name ?></td>
                         <td style="width: 100px;" class="text-center">
                           <a href="<?= base_url('upload/img/') . $value->recipe_image ?>" data-toggle="lightbox">
                             <img src="<?= base_url('upload/img/') . $value->recipe_image ?>" alt="" class="rounded" style="max-width:100%; max-height:100%;">
                           </a>
                         </td>
+                        <td><?= $value->recipe_name ?></td>
                         <td><?= $value->category ?></td>
                         <td class="text-center" style="width: 130px;">
-                          <a href="<?= base_url("recipe/detail/$value->recipe_id") ?>" class="btn-sm btn-primary mb-2" data-toggle="tooltip" title="Detail"><i class="fas fa-eye"></i></a>
+                          <a href="<?= base_url("recipe/detail/$value->recipe_id") ?>" class="btn-sm btn-info mb-2" data-toggle="tooltip" title="Detail"><i class="fas fa-eye"></i></a>
                           <a href="<?= base_url("recipe/edit/$value->recipe_id") ?>" class="btn-sm btn-primary mb-2" data-toggle="tooltip" title="Edit"><i class="fas fa-edit"></i></a>
                           <a href="#" data-toggle="modal" data-target="#deleteModal<?= $i ?>" class="btn-sm btn-danger" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></a>
                           <!-- Logout Modal-->
@@ -149,8 +149,8 @@
 
       //initialize datatable
       $('#dataTable').dataTable({
-        "pageLength": 25,
-        "lengthMenu": [25, 50, 75, 100, 150, 200],
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 75, 100, 150, 200],
         "responsive": true
       });
 

@@ -121,8 +121,8 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('#dataTable').dataTable({
-        "pageLength": 25,
-        "lengthMenu": [25, 50, 75, 100, 150, 200]
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 75, 100, 150, 200]
       });
 
       //initialize lightbox

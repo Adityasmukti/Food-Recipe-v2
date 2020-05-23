@@ -1,4 +1,4 @@
-<ul class=" sidenav navbar-nav bg-gradient-primary sidebar sidebar-black accordion" id="accordionSidebar">
+<ul class=" sidenav navbar-nav bg-gradient-primary sidebar sidebar-light accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center text-white" href="<?= base_url() ?>">
@@ -74,7 +74,7 @@
   <hr class="sidebar-divider d-none d-md-block">
 
   <!-- Sidebar Toggler (Sidebar) -->
-  <div class="text-center d-none d-md-inline">
+  <div class="text-center text-white d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 
