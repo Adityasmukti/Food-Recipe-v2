@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Category - <?= $this->session->userdata('name');?></title>
+  <title>Category - <?= $this->session->userdata('name'); ?></title>
   <!-- Header -->
   <?php $this->load->view('header'); ?>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" rel="stylesheet" type="text/css">
@@ -53,8 +53,8 @@
                   <thead>
                     <tr class="text-center">
                       <th>No</th>
-                      <th>Category Name</th>
                       <th>Image</th>
+                      <th>Category Name</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -63,12 +63,12 @@
                     foreach ($data as $value) { ?>
                       <tr>
                         <td style="width: 50px" class="text-center"><?= $i ?></td>
-                        <td><?= $value->category_name ?></td>
                         <td style="width: 100px;" class="text-center">
-                          <a href="<?= base_url('upload/img/') . $value->category_image ?>" data-toggle="lightbox">
-                            <img src="<?= base_url('upload/img/') . $value->category_image ?>" alt="" class="rounded" style="max-width:100%; max-height:100%;">
+                          <a href="<?= empty($value->category_image) ? base_url("upload/img/default.png") : base_url("upload/img/$value->category_image") ?>" data-toggle="lightbox">
+                            <img src="<?= empty($value->category_image) ? base_url("upload/img/default.png") : base_url("upload/img/$value->category_image") ?>" alt="" class="rounded" style="max-width:100%; max-height:100%;">
                           </a>
                         </td>
+                        <td><?= $value->category_name ?></td>
                         <td class="text-center" style="width: 80px;">
                           <a href="<?= base_url("category/edit/$value->category_id") ?>" class="btn-sm btn-primary mb-2"><i class="fas fa-edit"></i></a>
                           <a href="#" data-toggle="modal" data-target="#deleteModal<?= $i ?>" class="btn-sm btn-danger"><i class="fas fa-trash"></i></a>

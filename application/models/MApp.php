@@ -11,7 +11,7 @@ class MApp extends CI_Model
     $this->LoadSetting();
   }
   //insert
-  public function select($table, $where = "")
+  public function select($table, $where)
   {
     foreach ($where as $key => $value) {
       $this->db->where($key, $value);
@@ -109,7 +109,7 @@ class MApp extends CI_Model
       $gbr = $this->upload->data();
       return $gbr['file_name'];
     }
-    return "noimage.png";
+    return "default.png";
   }
   ///=======================================================================================================
 
@@ -154,7 +154,7 @@ class MApp extends CI_Model
       $gbr = $this->upload->data();
       return $gbr['file_name'];
     }
-    return "noimage.png";
+    return "default.png";
   }
 
   public function getIdRecipe()
@@ -209,7 +209,7 @@ class MApp extends CI_Model
       $gbr = $this->upload->data();
       return $gbr['file_name'];
     }
-    return "noimage.png";
+    return "default.png";
   }
 
   // Upload Image    
@@ -223,7 +223,7 @@ class MApp extends CI_Model
       $gbr = $this->upload->data();
       return $gbr['file_name'];
     }
-    return "noimage.png";
+    return "default.png";
   }
   ///=======================================================================================================
 
@@ -233,7 +233,7 @@ class MApp extends CI_Model
   ///=======================================================================================================
   public function login($auth_email, $auth_pws)
   {
-    $this->db->select("auth_id, auth_fullname, auth_image, auth_access, auth_email,auth_pws, auth_token, auth_create, auth_verify");
+    $this->db->select("auth_id, auth_fullname, auth_image, auth_access, auth_email, auth_token, auth_create, auth_verify");
     $this->db->from("tb_auth");
     $this->db->where("auth_email", $auth_email);
     $this->db->where("auth_pws", SHA1($auth_pws));
@@ -317,7 +317,7 @@ class MApp extends CI_Model
       $gbr = $this->upload->data();
       return $gbr['file_name'];
     }
-    return "noimage.png";
+    return "default.png";
   }
 
   public function cekUsers($field, $value)

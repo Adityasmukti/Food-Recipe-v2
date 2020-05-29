@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Recipe - <?= $this->session->userdata('name');?></title>
+  <title>Recipe - <?= $this->session->userdata('name'); ?></title>
 
   <!-- Header -->
   <?php $this->load->view('header'); ?>
@@ -82,8 +82,8 @@
                       <tr>
                         <td style="width: 30px" class="text-center"><?= $i ?></td>
                         <td style="width: 100px;" class="text-center">
-                          <a href="<?= base_url('upload/img/') . $value->recipe_image ?>" data-toggle="lightbox">
-                            <img src="<?= base_url('upload/img/') . $value->recipe_image ?>" alt="" class="rounded" style="max-width:100%; max-height:100%;">
+                          <a href="<?= empty($value->recipe_image) ? base_url("upload/img/default.png") : base_url("upload/img/$value->recipe_image") ?>" data-toggle="lightbox">
+                            <img src="<?= empty($value->recipe_image) ? base_url("upload/img/default.png") : base_url("upload/img/$value->recipe_image") ?>" alt="" class="rounded" style="max-width:100%; max-height:100%;">
                           </a>
                         </td>
                         <td><?= $value->recipe_name ?></td>

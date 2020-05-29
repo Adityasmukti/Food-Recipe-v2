@@ -92,7 +92,7 @@ class MApi extends CI_Model
       $this->db->like('recipe_ingredient', $recipe_ingredient);
     if (!empty($recipe_instruction))
       $this->db->like('recipe_instruction', $recipe_instruction);
-    $this->db->select("recipe_id, recipe_name, recipe_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", recipe_image) recipe_image_link, category, recipe_ingredient, recipe_instruction");
+    $this->db->select("recipe_id, recipe_name, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", IF(recipe_image IS NULL OR recipe_image = '', 'default.png',recipe_image)) recipe_image_link, category, recipe_ingredient, recipe_instruction");
     $this->db->from('tb_recipe');
     $this->db->join("tb_recipe_category", 'recipe_category_recipe=recipe_id', 'left');
     $this->db->join("tb_category", 'recipe_category_category=category_id', 'left');
@@ -103,7 +103,7 @@ class MApi extends CI_Model
 
   public function getRecipeBy($recipe_id)
   {
-    $this->db->select("recipe_id, recipe_name, recipe_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", recipe_image) recipe_image_link, recipe_ingredient, recipe_instruction");
+    $this->db->select("recipe_id, recipe_name, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", IF(recipe_image IS NULL OR recipe_image = '', 'default.png',recipe_image)) recipe_image_link, recipe_ingredient, recipe_instruction");
     $this->db->from('tb_recipe');
     $this->db->where('recipe_id', $recipe_id);
     return $this->db->get();
@@ -111,9 +111,9 @@ class MApi extends CI_Model
 
   public function getRecipeCategoryBy($recipe_category_recipe)
   {
-    $this->db->select("category_id, category_name, category_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", category_image) category_image_link");
+    $this->db->select("category_id, category_name, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", IF(category_image IS NULL OR category_image = '', 'default.png',category_image)) category_image_link");
     $this->db->from("tb_recipe_category");
-    $this->db->join('tb_category', 'tb_category.category_id = tb_recipe_category.recipe_category_recipe', 'left');
+    $this->db->join('tb_category', 'tb_category.category_id = tb_recipe_category.recipe_category_category', 'left');
     $this->db->where("recipe_category_recipe", $recipe_category_recipe);
     return $this->db->get();
   }
@@ -123,7 +123,7 @@ class MApi extends CI_Model
   // Get Category data
   public function getCategory()
   {
-    $this->db->select("category_id, category_name, category_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", category_image) category_image_link");
+    $this->db->select("category_id, category_name, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", IF(category_image IS NULL OR category_image='', 'default.png', category_image)) category_image_link");
     $this->db->from('tb_category');
     return $this->db->get();
   }
@@ -133,7 +133,7 @@ class MApi extends CI_Model
   // login
   public function login($auth_email, $auth_pws)
   {
-    $this->db->select("auth_id, auth_fullname, auth_access, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
+    $this->db->select("auth_id, auth_fullname, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
     $this->db->from("tb_auth");
     $this->db->where('auth_email', $auth_email);
     $this->db->where('auth_pws', SHA1($auth_pws));
@@ -149,7 +149,7 @@ class MApi extends CI_Model
 
   public function getUserBy($auth_id)
   {
-    $this->db->select("auth_id, auth_fullname, auth_access, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
+    $this->db->select("auth_id, auth_fullname, auth_email, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", IF(auth_image IS NULL OR auth_image='', 'default.png', auth_image)) auth_image");
     $this->db->from("tb_auth");
     $this->db->where("auth_id", $auth_id);
     return $this->db->get()->row();
@@ -157,7 +157,7 @@ class MApi extends CI_Model
 
   public function getUserByEmail($auth_email)
   {
-    $this->db->select("auth_id, auth_fullname, auth_access, auth_email, auth_image, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", auth_image) auth_image");
+    $this->db->select("auth_id, auth_fullname, auth_email, CONCAT(" . $this->db->escape(base_url("upload/img/")) . ", IF(auth_image IS NULL OR auth_image='', 'default.png', auth_image)) auth_image");
     $this->db->from("tb_auth");
     $this->db->where("auth_email", $auth_email);
     return $this->db->get()->row();
@@ -246,14 +246,14 @@ class MApi extends CI_Model
   public function UploadImageUser()
   {
     $config['upload_path'] = './upload/img/'; //path folder
-    $config['allowed_types'] = 'gif|jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
-    $config['encrypt_name'] = TRUE; //Enkripsi nama yang terupload
+    $config['allowed_types'] = 'gif|jpg|png|jpeg';
+    $config['encrypt_name'] = TRUE;
     $this->upload->initialize($config);
     if ($this->upload->do_upload("auth_image")) {
       $gbr = $this->upload->data();
       return $gbr['file_name'];
     }
-    return "noimage.png";
+    return "default.png";
   }
 }
 

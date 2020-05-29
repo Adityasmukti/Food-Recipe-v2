@@ -72,7 +72,7 @@
                 </div>
                 <div class="form-group">
                   <label for="auth_image">User image</label><br>
-                  <img src="<?= base_url("upload/img/$data->auth_image") ?>" alt="" width="200px">
+                  <img src="<?= empty($data->auth_image) ? base_url("upload/img/default.png") : base_url("upload/img/$data->auth_image") ?>" alt="" width="200px">
                   <p></p>
                   <input type="file" class="form-control-file" id="auth_image" name="auth_image">
                   <input type="hidden" id="auth_image_old" name="auth_image_old" class="form-control" value="<?= $data->auth_image ?>">

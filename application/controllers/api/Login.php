@@ -31,16 +31,16 @@ class Login extends REST_Controller
                 throw new Exception("Database Error!");
               if ($result->num_rows() > 0) {
                 $data["status"] = TRUE;
-                $data["message"] = "Success";
+                $data["message"] = "";
                 $data["result"] = $result->unbuffered_row('array');
                 $this->response($data, REST_Controller::HTTP_OK);
               } else
-                $data["message"] = "Your password is wrong!";
+                $data["message"] = "Your password wrong or access denied!";
             } else $data["message"] = "Password empty!";
           }
         } else $data["message"] = "Username empty!";
       }
-      $this->response($data, REST_Controller::HTTP_OK);
+      $this->response($data, REST_Controller::HTTP_UNAUTHORIZED);
     } catch (Exception $e) {
       $this->response(array("status" => FALSE, "message" => $e->getMessage(), "result" => ""), REST_Controller::HTTP_BAD_REQUEST);
     }
